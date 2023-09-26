@@ -109,8 +109,8 @@ class mlengine(ExampleEngine):
     
     def __init__(self, commands, options, stderr, draw_or_resign, **popen_args: str) -> None:
         
-        with open("trainedmodel.p", "rb") as fp:
-            self.model = pickle.load(fp)
+        # with open("trainedmodel.p", "rb") as fp:
+        #     self.model = pickle.load(fp)
         
         self.t1 = threading.Thread(target=self.timer, args=(0,))
         self.t1.start()
@@ -118,9 +118,10 @@ class mlengine(ExampleEngine):
     
     def timer(self, n=0):
         
-        print(f'----------Time: {n}----------')
-        n = n + 1
-        time.sleep(1)
+        while(True):
+            print(f'----------Time: {n}----------')
+            n = n + 1
+            time.sleep(1)
         
         
     def convert_fen_to_bitboard(self, fen, cols=None) -> pd.core.series.Series:
