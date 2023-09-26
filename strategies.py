@@ -106,12 +106,12 @@ class ComboEngine(ExampleEngine):
 
 class mlengine(ExampleEngine):
     
-    def __init__(self, *args, **kargs):
+    def __init__(self, commands, options, stderr, draw_or_resign) -> None:
         
         with open("trainedmodel.p", "rb") as fp:
             self.model = pickle.load(fp)
             
-        super().__init__()
+        super().__init__(commands, options, stderr, draw_or_resign)
     
     def convert_fen_to_bitboard(self, fen, cols=None) -> pd.core.series.Series:
         
