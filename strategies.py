@@ -106,59 +106,61 @@ class ComboEngine(ExampleEngine):
 
 class mlengine(ExampleEngine):
     
-    # def __init__(self, *args, **kargs):
+    def __init__(self, *args, **kargs):
         
-    #     with open("trainedmodel.p", "rb") as fp:
-    #         self.model = pickle.load(fp)
-    
-    # def convert_fen_to_bitboard(self, fen, cols=None) -> pd.core.series.Series:
-        
-        
-    #     """Converts a fen string to a bitboard mapping
+        with open("trainedmodel.p", "rb") as fp:
+            self.model = pickle.load(fp)
             
-    #         Parameters
-    #         ----------
-    #         fen : str
-    #             The FEN string
-                
-    #         Returns
-    #         -------
-    #         list
-    #             A list of bool
-    #     """
-        
-    #     # The bitboard mapping is going to use 1 hot encoding - where each bit
-    #     # corresponds to a specific square, piece, and color
-        
-    #     board = chess.Board(fen)
-    #     outlist = []
-        
-    #     # encode white pieces
-    #     # in python-chess chess.WHITE = True and chess.BLACK = False
-    #     # chess.Pawn = 1, King = 6, etc
-    #     for i in range(1,7):
-    #         outlist.extend(board.pieces(i, chess.WHITE).tolist())
-        
-    #     # encode castling rights for white
-        
-    #     outlist.append(board.has_castling_rights(chess.WHITE))
-    #     outlist.append(board.has_queenside_castling_rights(chess.WHITE))
-        
-    #     # encode black pieces
-    #     for i in range(1,7):
-    #         outlist.extend(board.pieces(i, chess.BLACK).tolist())
-        
-    #     # encode castling rights for black
-        
-    #     outlist.append(board.has_castling_rights(chess.BLACK))
-    #     outlist.append(board.has_queenside_castling_rights(chess.BLACK))
+        pass
     
-    #     return pd.Series(outlist, index=cols, dtype=bool)
+    def convert_fen_to_bitboard(self, fen, cols=None) -> pd.core.series.Series:
+        
+        
+        """Converts a fen string to a bitboard mapping
+            
+            Parameters
+            ----------
+            fen : str
+                The FEN string
+                
+            Returns
+            -------
+            list
+                A list of bool
+        """
+        
+        # The bitboard mapping is going to use 1 hot encoding - where each bit
+        # corresponds to a specific square, piece, and color
+        
+        board = chess.Board(fen)
+        outlist = []
+        
+        # encode white pieces
+        # in python-chess chess.WHITE = True and chess.BLACK = False
+        # chess.Pawn = 1, King = 6, etc
+        for i in range(1,7):
+            outlist.extend(board.pieces(i, chess.WHITE).tolist())
+        
+        # encode castling rights for white
+        
+        outlist.append(board.has_castling_rights(chess.WHITE))
+        outlist.append(board.has_queenside_castling_rights(chess.WHITE))
+        
+        # encode black pieces
+        for i in range(1,7):
+            outlist.extend(board.pieces(i, chess.BLACK).tolist())
+        
+        # encode castling rights for black
+        
+        outlist.append(board.has_castling_rights(chess.BLACK))
+        outlist.append(board.has_queenside_castling_rights(chess.BLACK))
+    
+        return pd.Series(outlist, index=cols, dtype=bool)
     
     def search(self, board: chess.Board, *args: Any) -> PlayResult:
         
         # print the estimated evaluation of the current board
-        # print(self.model.predict(self.convert_fen_to_bitboard(board.fen()).values[None]))
+        print(self.model.predict(self.convert_fen_to_bitboard(board.fen()).values[None]))
         
         
         # for now, return a random move
