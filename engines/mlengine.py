@@ -5,13 +5,13 @@ Created on Tue Sep 26 11:20:36 2023
 @author: osiri
 """
 
-from strategies import ExampleEngine
+from strategies import MinimalEngine
 from typing import Any
 import chess
 import random
 from chess.engine import PlayResult
 
-class RandomMove2(ExampleEngine):
+class RandomMove2(MinimalEngine):
     """Get a random move."""
 
     def search(self, board: chess.Board, *args: Any) -> PlayResult:
