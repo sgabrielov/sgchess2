@@ -111,7 +111,7 @@ class mlengine(ExampleEngine):
         with open("trainedmodel.p", "rb") as fp:
             self.model = pickle.load(fp)
             
-        pass
+        super().__init__()
     
     def convert_fen_to_bitboard(self, fen, cols=None) -> pd.core.series.Series:
         
