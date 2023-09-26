@@ -15,7 +15,7 @@ import logging
 import threading
 import time
 
-import tensorflow as tf
+# import tensorflow as tf
 import pickle
 import pandas as pd
 
