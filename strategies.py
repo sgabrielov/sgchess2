@@ -11,7 +11,6 @@ import random
 from engine_wrapper import MinimalEngine
 from typing import Any, Union
 import logging
-from mlengine import RandomMove2
 
 MOVE = Union[chess.engine.PlayResult, list[chess.Move]]
 
