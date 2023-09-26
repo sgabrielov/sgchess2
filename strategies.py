@@ -12,12 +12,14 @@ from engine_wrapper import MinimalEngine
 from typing import Any, Union
 import logging
 
+import threading
+import time
 
 # tf imports
 
 import pickle
-import tensorflow as tf
 import pandas as pd
+
 
 MOVE = Union[chess.engine.PlayResult, list[chess.Move]]
 
@@ -110,9 +112,16 @@ class mlengine(ExampleEngine):
         
         with open("trainedmodel.p", "rb") as fp:
             self.model = pickle.load(fp)
-            
+        
+        self.t1 = threading.Thread(target=self.timer, args=(0,))
         super().__init__(commands, options, stderr, draw_or_resign)
     
+    def timer(self, n=0):
+        
+        print(f'Time: {n}')
+        n = n + 1
+        time.sleep(1)
+        
     def convert_fen_to_bitboard(self, fen, cols=None) -> pd.core.series.Series:
         
         
