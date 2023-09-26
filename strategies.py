@@ -15,8 +15,7 @@ import logging
 import threading
 import time
 
-# tf imports
-
+import tensorflow as tf
 import pickle
 import pandas as pd
 
@@ -122,6 +121,7 @@ class mlengine(ExampleEngine):
         n = n + 1
         time.sleep(1)
         
+        
     def convert_fen_to_bitboard(self, fen, cols=None) -> pd.core.series.Series:
         
         
@@ -169,7 +169,7 @@ class mlengine(ExampleEngine):
     def search(self, board: chess.Board, *args: Any) -> PlayResult:
         
         # print the estimated evaluation of the current board
-        print(self.model.predict(self.convert_fen_to_bitboard(board.fen()).values[None]))
+        # print(self.model.predict(self.convert_fen_to_bitboard(board.fen()).values[None]))
         
         
         # for now, return a random move
