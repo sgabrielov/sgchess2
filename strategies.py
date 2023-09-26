@@ -108,7 +108,8 @@ class mlengine(MinimalEngine):
     
     def __init__(self, *args, **kargs):
         
-        self.model = pickle.load("trainedmodel.p")
+        with open("trainedmodel.p", "rb") as fp:
+            self.model = pickle.load(fp)
     
     def convert_fen_to_bitboard(self, fen, cols=None) -> pd.core.series.Series:
         
