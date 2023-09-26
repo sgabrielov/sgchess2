@@ -113,11 +113,12 @@ class mlengine(ExampleEngine):
             self.model = pickle.load(fp)
         
         self.t1 = threading.Thread(target=self.timer, args=(0,))
+        self.t1.start()
         super().__init__(commands, options, stderr, draw_or_resign)
     
     def timer(self, n=0):
         
-        print(f'Time: {n}')
+        print(f'----------Time: {n}----------')
         n = n + 1
         time.sleep(1)
         
