@@ -104,7 +104,7 @@ class ComboEngine(ExampleEngine):
             move = possible_moves[0]
         return PlayResult(move, None, draw_offered=draw_offered)
 
-class mlengine(MinimalEngine):
+class mlengine(ExampleEngine):
     
     def __init__(self, *args, **kargs):
         
@@ -155,8 +155,7 @@ class mlengine(MinimalEngine):
     
         return pd.Series(outlist, index=cols, dtype=bool)
     
-    def search(self, board: chess.Board, time_limit: chess.engine.Limit, ponder: bool, draw_offered: bool,
-               root_moves: MOVE) -> chess.engine.PlayResult:
+    def search(self, board: chess.Board, *args: Any) -> PlayResult:
         
         # print the estimated evaluation of the current board
         print(self.model.predict(self.convert_fen_to_bitboard(board.fen()).values[None]))
