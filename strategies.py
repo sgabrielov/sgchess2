@@ -12,6 +12,13 @@ from engine_wrapper import MinimalEngine
 from typing import Any, Union
 import logging
 
+
+# tf imports
+
+import pickle
+import tensorflow as tf
+import pandas as pd
+
 MOVE = Union[chess.engine.PlayResult, list[chess.Move]]
 
 
@@ -96,3 +103,64 @@ class ComboEngine(ExampleEngine):
             possible_moves.sort(key=str)
             move = possible_moves[0]
         return PlayResult(move, None, draw_offered=draw_offered)
+
+class mlengine(MinimalEngine):
+    
+    def __init__(self, *args, **kargs):
+        
+        self.model = pickle.load("trainedmodel.p")
+    
+    def convert_fen_to_bitboard(self, fen, cols=None) -> pd.core.series.Series:
+        
+        
+        """Converts a fen string to a bitboard mapping
+            
+            Parameters
+            ----------
+            fen : str
+                The FEN string
+                
+            Returns
+            -------
+            list
+                A list of bool
+        """
+        
+        # The bitboard mapping is going to use 1 hot encoding - where each bit
+        # corresponds to a specific square, piece, and color
+        
+        board = chess.Board(fen)
+        outlist = []
+        
+        # encode white pieces
+        # in python-chess chess.WHITE = True and chess.BLACK = False
+        # chess.Pawn = 1, King = 6, etc
+        for i in range(1,7):
+            outlist.extend(board.pieces(i, chess.WHITE).tolist())
+        
+        # encode castling rights for white
+        
+        outlist.append(board.has_castling_rights(chess.WHITE))
+        outlist.append(board.has_queenside_castling_rights(chess.WHITE))
+        
+        # encode black pieces
+        for i in range(1,7):
+            outlist.extend(board.pieces(i, chess.BLACK).tolist())
+        
+        # encode castling rights for black
+        
+        outlist.append(board.has_castling_rights(chess.BLACK))
+        outlist.append(board.has_queenside_castling_rights(chess.BLACK))
+    
+        return pd.Series(outlist, index=cols, dtype=bool)
+    
+    def search(self, board: chess.Board, time_limit: chess.engine.Limit, ponder: bool, draw_offered: bool,
+               root_moves: MOVE) -> chess.engine.PlayResult:
+        
+        # print the estimated evaluation of the current board
+        print(self.model.predict(self.convert_fen_to_bitboard(board.fen()).values[None]))
+        
+        
+        # for now, return a random move
+        return PlayResult(random.choice(list(board.legal_moves)), None)
+        
