@@ -106,7 +106,7 @@ class ComboEngine(ExampleEngine):
 
 class mlengine(ExampleEngine):
     
-    def __init__(self, commands, options, stderr, draw_or_resign) -> None:
+    def __init__(self, commands, options, stderr, draw_or_resign, **popen_args: str) -> None:
         
         with open("trainedmodel.p", "rb") as fp:
             self.model = pickle.load(fp)
