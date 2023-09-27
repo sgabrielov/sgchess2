@@ -15,7 +15,7 @@ import logging
 import threading
 import time
 
-# import tensorflow as tf
+import tensorflow as tf
 import pickle
 import pandas as pd
 
@@ -105,12 +105,12 @@ class ComboEngine(ExampleEngine):
             move = possible_moves[0]
         return PlayResult(move, None, draw_offered=draw_offered)
 
-class mlengine(ExampleEngine):
+class TFEngine(ExampleEngine):
     
     def __init__(self, commands, options, stderr, draw_or_resign, **popen_args: str) -> None:
         
-        # with open("trainedmodel.p", "rb") as fp:
-        #     self.model = pickle.load(fp)
+        with open("trainedmodel.p", "rb") as fp:
+            self.model = pickle.load(fp)
         
         self.t1 = threading.Thread(target=self.timer, args=(0,))
         self.t1.start()
@@ -122,9 +122,12 @@ class mlengine(ExampleEngine):
             print(f'----------Time: {n}----------')
             n = n + 1
             time.sleep(1)
+            
+    def populate_search_tree(self, model: tf.keras.src.engine.sequential.Sequential):
         
-        
-    def convert_fen_to_bitboard(self, fen, cols=None) -> pd.core.series.Series:
+        pass
+    
+    def convert_fen_to_bitboard(self, board: chess.Board, cols=None) -> pd.core.series.Series:
         
         
         """Converts a fen string to a bitboard mapping
@@ -143,7 +146,6 @@ class mlengine(ExampleEngine):
         # The bitboard mapping is going to use 1 hot encoding - where each bit
         # corresponds to a specific square, piece, and color
         
-        board = chess.Board(fen)
         outlist = []
         
         # encode white pieces
@@ -166,9 +168,10 @@ class mlengine(ExampleEngine):
         outlist.append(board.has_castling_rights(chess.BLACK))
         outlist.append(board.has_queenside_castling_rights(chess.BLACK))
     
-        return pd.Series(outlist, index=cols, dtype=bool)
+        return tf.convert_to_tensor(outlist)
     
-    def search(self, board: chess.Board, *args: Any) -> PlayResult:
+    def search(self, board: chess.Board, ponder: bool, *args: Any) -> PlayResult:
+        
         
         # print the estimated evaluation of the current board
         # print(self.model.predict(self.convert_fen_to_bitboard(board.fen()).values[None]))
@@ -176,4 +179,8 @@ class mlengine(ExampleEngine):
         
         # for now, return a random move
         return PlayResult(random.choice(list(board.legal_moves)), None)
-        
+
+class minimax_node():
+    
+    def __init__(self):
+        pass
