@@ -114,6 +114,8 @@ class TFEngine(ExampleEngine):
         
         self.t1 = threading.Thread(target=self.timer, args=(0,))
         self.t1.start()
+        
+        self.eval_map = {}
         super().__init__(commands, options, stderr, draw_or_resign)
     
     def timer(self, n=0):
@@ -178,7 +180,33 @@ class TFEngine(ExampleEngine):
         
         
         # for now, return a random move
-        return PlayResult(random.choice(list(board.legal_moves)), None)
+        maxagent = board.turn() == chess.WHITE
+        if maxagent:
+            topeval = -1000
+        else:
+            topeval = 1000
+            
+        for move in board.legal_moves:
+            boardcopy = board.copy()
+            boardcopy.push(move)
+            
+            ev = self.get_eval(boardcopy)
+            if maxagent:
+                if ev > topeval:
+                    topmove = move
+            else:
+                if ev < topeval:
+                    topmove = move
+            
+        return PlayResult(topmove, None)
+    
+    def get_eval(self, board):
+        try:
+            return self.eval_map[board.fen()]
+        except KeyError:
+            eval_estimate = self.model.predict(self.convert_fen_to_bitboard(board)[None])[0][0]
+            self.eval_map[board.fen()] = eval_estimate
+            return eval_estimate
 
 class minimax_node():
     

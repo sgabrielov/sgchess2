@@ -20,6 +20,9 @@ import chess
 
 import time
 
+
+import random
+
 starting_fen = '8/1p6/p3p3/1pPk4/1P2pPp1/8/4K3/6b1 w - - 0 46'
 
 SCRIPTLOCATION = '/home/ml/sgchess/'
@@ -36,16 +39,46 @@ TREE_ROOT = chess.Board(starting_fen)
 class MinimaxNode():
     
     
-    def __init__(self, init_board = starting_fen, maxagent = True):
+    def __init__(self, parent = None, init_board = starting_fen, maxagent = True, evaluation = None, maxdepth = 0):
         
         self.board = chess.Board(starting_fen)
-        self.children = self.board.legal_moves()
+        self.children = None
+        self.value = evaluation
+        self.parent = parent
+        self.maxagent = maxagent
+        self.maxdepth = maxdepth
+
+class SimpleMinimaxNode():
+
+    def __init__(self, value, maxagent = True):
+        self.value = value
+        self.children = []
+        self.maxagent = maxagent
+    
+    def set_children(self, children):
+        self.children = children
+        
+    def print_tree(self):
+        # print(self.value, end=' ')
+        if len(self.children) > 0:
+            for child in self.children:
+                child.print_tree()
+                
+    def update_value(self):
+        if len(self.children) == 0:
+            return
+        elif self.maxagent:
+            self.value = self.get_max()
+        else:
+            self.value = self.get_min()
+            
+        
     
 def get_eval(board, model):
     try:
         return eval_map[board.fen()]
     except KeyError:
-        eval_estimate = model.predict(convert_fen_to_bitboard(board.fen())[None])[0][0]
+        eval_estimate = model.predict(convert_fen_to_bitboard(board)[None])[0][0]
         eval_map[board.fen()] = eval_estimate
         return eval_estimate
     
@@ -78,7 +111,7 @@ def testfunc(func, *args):
     end = time.time()
     print(end - start)
     
-def convert_fen_to_bitboard(fen, cols=None) -> np.ndarray:
+def convert_fen_to_bitboard(board: chess.Board, cols=None):
     
     
     """Converts a fen string to a bitboard mapping
@@ -97,7 +130,6 @@ def convert_fen_to_bitboard(fen, cols=None) -> np.ndarray:
     # The bitboard mapping is going to use 1 hot encoding - where each bit
     # corresponds to a specific square, piece, and color
     
-    board = chess.Board(fen)
     outlist = []
     
     # encode white pieces
@@ -123,8 +155,14 @@ def convert_fen_to_bitboard(fen, cols=None) -> np.ndarray:
     return tf.convert_to_tensor(outlist)   
 
 if __name__ == '__main__':
-    t1 = threading.Thread(target=populate_search_tree, args=(chess.Board(starting_fen),))
+    t1 = threading.Thread(target=populate_search_tree, args=(chess.Board('2r4k/p4b2/4pq2/1p1p1nR1/5P2/P2B4/1P2Q2P/1K4R1 b - - 2 30'),))
     t1.start()
     t1.join()
+    
+    # n = SimpleMinimaxNode(5)
+    # l = [SimpleMinimaxNode(random.randint(-10,10)) for x in range(10)]
+    # n.set_children(l)
+    # n.print_tree()
+
     
     print("Done")
