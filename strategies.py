@@ -112,8 +112,8 @@ class TFEngine(ExampleEngine):
         with open("trainedmodel.p", "rb") as fp:
             self.model = pickle.load(fp)
         
-        self.t1 = threading.Thread(target=self.timer, args=(0,))
-        self.t1.start()
+        #self.t1 = threading.Thread(target=self.timer, args=(0,))
+        #self.t1.start()
         
         self.eval_map = {}
         super().__init__(commands, options, stderr, draw_or_resign)
@@ -180,7 +180,7 @@ class TFEngine(ExampleEngine):
         
         
         # for now, return a random move
-        maxagent = board.turn() == chess.WHITE
+        maxagent = board.turn
         if maxagent:
             topeval = -1000
         else:
