@@ -190,14 +190,17 @@ class TFEngine(ExampleEngine):
             boardcopy = board.copy()
             boardcopy.push(move)
             
-            print(boardcopy)
+            #print(boardcopy)
             ev = self.model.predict(self.convert_fen_to_bitboard(boardcopy)[None])[0][0]
+            print(ev)
             if maxagent:
                 if ev > topeval:
                     topmove = move
+                    topeval = ev
             else:
                 if ev < topeval:
                     topmove = move
+                    topeval = ev
             
         return PlayResult(topmove, None)
     
