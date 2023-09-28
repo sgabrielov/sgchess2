@@ -111,7 +111,7 @@ class TFEngine(ExampleEngine):
         
         with open("trainedmodel.p", "rb") as fp:
             self.model = pickle.load(fp)
-        
+        print(self.model)
         #self.t1 = threading.Thread(target=self.timer, args=(0,))
         #self.t1.start()
         
@@ -190,7 +190,8 @@ class TFEngine(ExampleEngine):
             boardcopy = board.copy()
             boardcopy.push(move)
             
-            ev = self.model.predict(self.convert_fen_to_bitboard(board)[None])[0][0]
+            print(boardcopy)
+            ev = self.model.predict(self.convert_fen_to_bitboard(boardcopy)[None])[0][0]
             if maxagent:
                 if ev > topeval:
                     topmove = move
