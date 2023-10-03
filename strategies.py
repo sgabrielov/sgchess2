@@ -12,12 +12,15 @@ from engine_wrapper import MinimalEngine
 from typing import Any, Union
 import logging
 
-import threading
 import time
 
 import tensorflow as tf
 import pickle
 import pandas as pd
+
+from functions import convert_fen_to_bitboard
+
+from multiprocessing import Pool, Queue, Process
 
 
 MOVE = Union[chess.engine.PlayResult, list[chess.Move]]
@@ -107,13 +110,13 @@ class ComboEngine(ExampleEngine):
 
 class TFEngine(ExampleEngine):
     
+    
+    
     def __init__(self, commands, options, stderr, draw_or_resign, **popen_args: str) -> None:
         
-        with open("trainedmodel.p", "rb") as fp:
-            self.model = pickle.load(fp)
-        print(self.model)
-        #self.t1 = threading.Thread(target=self.timer, args=(0,))
-        #self.t1.start()
+        self.tfq = Queue()
+        self.tfproc = Process(target=self.timer, args=(self.tfq,))
+        #self.searchtreeproc = Process(self.populate_search_tree, args=(q,))
         
         self.eval_map = {}
         super().__init__(commands, options, stderr, draw_or_resign)
@@ -121,6 +124,8 @@ class TFEngine(ExampleEngine):
     def timer(self, n=0):
         
         while(True):
+            while(not self.tfq.empty()):
+                print(self.tfq.get())
             print(f'----------Time: {n}----------')
             n = n + 1
             time.sleep(1)
@@ -129,50 +134,17 @@ class TFEngine(ExampleEngine):
         
         pass
     
-    def convert_fen_to_bitboard(self, board: chess.Board, cols=None) -> pd.core.series.Series:
-        
-        
-        """Converts a fen string to a bitboard mapping
+    def tf_get_evals(self, q):
+        with open("trainedmodel.p", "rb") as fp:
+            model = pickle.load(fp)            
+            logger.info("TensorFlow model initialized")
             
-            Parameters
-            ----------
-            fen : str
-                The FEN string
-                
-            Returns
-            -------
-            list
-                A list of bool
-        """
         
-        # The bitboard mapping is going to use 1 hot encoding - where each bit
-        # corresponds to a specific square, piece, and color
-        
-        outlist = []
-        
-        # encode white pieces
-        # in python-chess chess.WHITE = True and chess.BLACK = False
-        # chess.Pawn = 1, King = 6, etc
-        for i in range(1,7):
-            outlist.extend(board.pieces(i, chess.WHITE).tolist())
-        
-        # encode castling rights for white
-        
-        outlist.append(board.has_castling_rights(chess.WHITE))
-        outlist.append(board.has_queenside_castling_rights(chess.WHITE))
-        
-        # encode black pieces
-        for i in range(1,7):
-            outlist.extend(board.pieces(i, chess.BLACK).tolist())
-        
-        # encode castling rights for black
-        
-        outlist.append(board.has_castling_rights(chess.BLACK))
-        outlist.append(board.has_queenside_castling_rights(chess.BLACK))
-    
-        return tf.convert_to_tensor(outlist)
-    
     def search(self, board: chess.Board, ponder: bool, *args: Any) -> PlayResult:
+        a = "Searching"
+        self.tfq.put(a)
+        return PlayResult(random.choice(list(board.legal_moves)), None)
+    def search2(self, board: chess.Board, ponder: bool, *args: Any) -> PlayResult:
         
         
         # print the estimated evaluation of the current board
@@ -191,7 +163,7 @@ class TFEngine(ExampleEngine):
             boardcopy.push(move)
             
             #print(boardcopy)
-            ev = self.model.predict(self.convert_fen_to_bitboard(boardcopy)[None])[0][0]
+            ev = self.model.predict(tf.convert_to_tensor(convert_fen_to_bitboard(boardcopy)[None]))[0][0]
             print(ev)
             if maxagent:
                 if ev > topeval:
@@ -208,11 +180,6 @@ class TFEngine(ExampleEngine):
         try:
             return self.eval_map[board.fen()]
         except KeyError:
-            eval_estimate = self.model.predict(self.convert_fen_to_bitboard(board)[None])[0][0]
+            eval_estimate = self.model.predict(tf.convert_to_tensor(convert_fen_to_bitboard(board)[None]))[0][0]
             self.eval_map[board.fen()] = eval_estimate
             return eval_estimate
-
-class minimax_node():
-    
-    def __init__(self):
-        pass
