@@ -116,6 +116,7 @@ class TFEngine(ExampleEngine):
         
         self.tfq = Queue()
         self.tfproc = Process(target=self.timer, args=(self.tfq,))
+        self.tfproc.start()
         #self.searchtreeproc = Process(self.populate_search_tree, args=(q,))
         
         self.eval_map = {}
