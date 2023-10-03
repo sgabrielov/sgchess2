@@ -13,6 +13,7 @@ from typing import Any, Union
 import logging
 
 import time
+import threading, queue
 
 import tensorflow as tf
 import pickle
@@ -20,7 +21,6 @@ import pandas as pd
 
 from functions import convert_fen_to_bitboard
 
-from multiprocessing import Pool, Queue, Process
 
 
 MOVE = Union[chess.engine.PlayResult, list[chess.Move]]
@@ -114,15 +114,15 @@ class TFEngine(ExampleEngine):
     
     def __init__(self, commands, options, stderr, draw_or_resign, **popen_args: str) -> None:
         
-        self.tfq = Queue()
-        self.tfproc = Process(target=self.timer, args=(self.tfq,))
+        self.tfq = queue.Queue()
+        self.tfproc = threading.Thread(target=self.timer, args=(self.tfq,))
         self.tfproc.start()
         #self.searchtreeproc = Process(self.populate_search_tree, args=(q,))
         
         self.eval_map = {}
         super().__init__(commands, options, stderr, draw_or_resign)
     
-    def timer(self, n=0):
+    def timer(self, q, n=0):
         
         while(True):
             while(not self.tfq.empty()):
