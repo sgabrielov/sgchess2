@@ -229,27 +229,27 @@ class TFEngine(ExampleEngine):
                 self.search_depth = self.search_depth + 1
                 print(f'Search depth: {self.search_depth}')
             
-            # get the list of nodes at the terminal depth
-            leaves = []
-            self.root.get_nodes_at_depth(self.search_depth, leaves)
-            
-            # if there are enough boards for a batch to send to tensorflow
-            while len(boards_to_eval) > self.BATCH_SIZE:
+                # get the list of nodes at the terminal depth
+                leaves = []
+                self.root.get_nodes_at_depth(self.search_depth, leaves)
                 
-                # put the first BATCH_SIZE boards on the queue
-                self.tfq.put(boards_to_eval[:self.BATCH_SIZE])
+                # if there are enough boards for a batch to send to tensorflow
+                while len(boards_to_eval) > self.BATCH_SIZE:
+                    
+                    # put the first BATCH_SIZE boards on the queue
+                    self.tfq.put(boards_to_eval[:self.BATCH_SIZE])
+                    
+                    # and remove the first BATCH_SIZE elements from the list
+                    boards_to_eval = boards_to_eval[self.BATCH_SIZE:]
                 
-                # and remove the first BATCH_SIZE elements from the list
-                boards_to_eval = boards_to_eval[self.BATCH_SIZE:]
-            
-            self.root.traversealphabeta(self.search_depth, float('-inf'), float('inf'), self.maxagent)
-            
-            # should build this into the search tree for speed optimization
-            # vvvvv
-            # 
-            for child in self.root.children:
-                if child.value == self.root.value:
-                    self.root.name = (self.root.name[0], child.name[1])
+                self.root.traversealphabeta(self.search_depth, float('-inf'), float('inf'), self.maxagent)
+                
+                # should build this into the search tree for speed optimization
+                # vvvvv
+                # 
+                for child in self.root.children:
+                    if child.value == self.root.value:
+                        self.root.name = (self.root.name[0], child.name[1])
                        
         
     def search(self, board: chess.Board, time_limit: chess.engine.Limit, ponder: bool, *args: Any) -> PlayResult:
