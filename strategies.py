@@ -167,7 +167,7 @@ class TFEngine(ExampleEngine):
         
         current_node = self.root
         
-        while self.searching and not self.draw_or_resign:
+        while self.searching:
             
             for current_node in leaves:
             
@@ -275,6 +275,8 @@ class TFEngine(ExampleEngine):
             
             self.root = MinimaxNode(0, (board, None), hidden = True)
             self.searchtreeproc.start()
+            
+            print(f'Search tree initialized:  {self.searchtreeproc}')
 
         else:        
             possibleboards = [] 
