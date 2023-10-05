@@ -15,11 +15,15 @@ import logging
 import time
 import threading, queue
 
-import tensorflow as tf
 import pickle
-import pandas as pd
 
-from functions import convert_fen_to_bitboard
+from tfengine import process_evals
+
+import functions
+
+from minimax import MinimaxNode
+
+import pandas as pd
 
 
 
@@ -34,7 +38,7 @@ logger = logging.getLogger(__name__)
 
 class ExampleEngine(MinimalEngine):
     """An example engine that all homemade engines inherit."""
-
+    
     pass
 
 
@@ -108,20 +112,44 @@ class ComboEngine(ExampleEngine):
             move = possible_moves[0]
         return PlayResult(move, None, draw_offered=draw_offered)
 
-class TFEngine(ExampleEngine):
-    
-    
+class TFEngine(ExampleEngine):   
     
     def __init__(self, commands, options, stderr, draw_or_resign, **popen_args: str) -> None:
-        
+        self.BATCH_SIZE = 64
+        # load tf model from disk
+        with open('trainedmodel.p', 'rb') as fp:
+            model = pickle.load(fp)
+            
+        # initialize queue for tensorflow predictions
         self.tfq = queue.Queue()
-        self.tfproc = threading.Thread(target=self.timer, args=(self.tfq,))
-        self.tfproc.start()
-        #self.searchtreeproc = Process(self.populate_search_tree, args=(q,))
         
+        # initialize queue for data to load into search tree
+        self.searchq = queue.Queue()
+        
+        # initialize tensorflow thread and start
+        self.tfproc = threading.Thread(target=process_evals, args=(self.tfq,self.searchq, model))
+        self.tfproc.start()
+        
+        # initialize search tree thread and do NOT start yet
+        # search thread starts upon first call to search method
+        self.searchtreeproc = threading.Thread(target=self.populate_search_tree, args=(self.searchq,))
+        
+        # initialize the root of the search tree
+        self.root = None
+        
+        # initialize queue for search tree thread
+        self.stq = queue.Queue()
+        
+        # initialize a dict for storage of already evaluated positions
         self.eval_map = {}
+        
+        self.searching = False
+        
+        
+        self.search_depth = 0
+                
         super().__init__(commands, options, stderr, draw_or_resign)
-    
+        
     def timer(self, q, n=0):
         
         while(True):
@@ -131,56 +159,134 @@ class TFEngine(ExampleEngine):
             n = n + 1
             time.sleep(1)
             
-    def populate_search_tree(self, model: tf.keras.src.engine.sequential.Sequential):
+    def populate_search_tree(self, initboard, q):
+        boards_to_eval = [self.root.name[0].fen()]
+        nodes_to_update = [self.root]
         
-        pass
-    
-    def tf_get_evals(self, q):
-        with open("trainedmodel.p", "rb") as fp:
-            model = pickle.load(fp)            
-            logger.info("TensorFlow model initialized")
+        leaves = [self.root]
+        
+        current_node = self.root
+        
+        while self.searching:
+            
+            for current_node in leaves:
+            
+                while not self.searchq.empty():        
+                    # tf engine pushes results onto searchq
+                    # as long as there are results here, there are search nodes that need updating
+                    # zip creates a tuple of the object that needs updating, and the value that should be used
+                    # list comprehension sets that value to each object for each tuple using setvalue
+                    # 
+                    
+                    [node.setvalue(value, unhide=True) for node, value in zip(nodes_to_update, self.searchq.get().flatten().tolist())]
+                    
+                    # remove the nodes that were just updated from the list of nodes to update
+                    nodes_to_update = nodes_to_update[self.BATCH_SIZE:]
+                
+                # get the current board
+                board = current_node.name[0]
+                
+                # get a list of moves with checks and captures at the front to optimize
+                #   alpha beta search
+                movelist = functions.get_checking_moves(board)
+                movelist.extend(functions.get_captures(board))
+                movelist.extend(functions.get_legal_moves_nonchecking_noncaptures(board))
+                
+                children = []
+                for move in movelist:
+                    
+                    # create a copy of the board and push the move onto the copy
+                    board_copy = board.copy()
+                    board_copy.push(move)
+                    
+                    # see if the position has already been evaluated
+                    try:
+                        move_eval = self.eval_map[board.fen()]
+                        
+                        # if so, create a new active minimax node and add it to the list of children
+                        # of the current node
+                        children.append(MinimaxNode(move_eval, (board_copy, move)))
+                        
+                    # if the key/eval is missing
+                    except KeyError: 
+                        
+                        # add this position to the list that need to be sent to tensorflow
+                        boards_to_eval.append(board_copy.fen())
+                        
+                        # create a new node that is hidden because it does not have an evaluation yet
+                        newnode = MinimaxNode(0, (board_copy, move), hidden = True)
+                        
+                        # add the new node to the list of nodes that are waiting results from tensorflow
+                        nodes_to_update.append(newnode)
+                        
+                        # add to the current node's list of children
+                        children.append(newnode)
+                
+                # set the minimax node to the list of nodes that were just produced
+                current_node.children = children
+                
+                # increment the depth that has been searched
+                self.search_depth = self.search_depth + 1
+                print(f'Search depth: {self.search_depth}')
+            
+            # get the list of nodes at the terminal depth
+            leaves = []
+            self.root.get_nodes_at_depth(self.search_depth, leaves)
+            
+            # if there are enough boards for a batch to send to tensorflow
+            while len(boards_to_eval) > self.BATCH_SIZE:
+                
+                # put the first BATCH_SIZE boards on the queue
+                self.tfq.put(boards_to_eval[:self.BATCH_SIZE])
+                
+                # and remove the first BATCH_SIZE elements from the list
+                boards_to_eval = boards_to_eval[self.BATCH_SIZE:]
+            
+            self.root.traversealphabeta(self.search_depth, float('-inf'), float('inf'), self.maxagent)
+            
+            # should build this into the search tree for speed optimization
+            # vvvvv
+            # 
+            for child in self.root.children:
+                if child.value == self.root.value:
+                    self.root.name[1] = child.name[1]
+                       
+        
+    def search(self, board: chess.Board, time_limit: chess.engine.Limit, ponder: bool, *args: Any) -> PlayResult:
+        
+        # set the flag that the engine is searching
+        self.searching = True
+        
+        # if isinstance(time_limit.time, int):
+        #     my_time = time_limit.time
+        #     my_inc = 0
+        # elif board.turn == chess.WHITE:
+        #     my_time = time_limit.white_clock if isinstance(time_limit.white_clock, int) else 0
+        #     my_inc = time_limit.white_inc if isinstance(time_limit.white_inc, int) else 0
+        # else:
+        #     my_time = time_limit.black_clock if isinstance(time_limit.black_clock, int) else 0
+        #     my_inc = time_limit.black_inc if isinstance(time_limit.black_inc, int) else 0
+        
+        # the engine calls search for the first time once book moves have been exhausted
+        if not self.searchtreeproc.is_alive():
+            
+            self.maxagent = board.turn
+            
+            self.root = MinimaxNode(0, (board, None), hidden = True)
+            self.searchtreeproc.start()
+                
+        while self.search_depth < 2:
+            time.sleep(1)
+            print('---sleeping 1s---')
+        possibleboards = [] 
+        self.root.get_nodes_at_depth(2, possibleboards)
+        self.root = possibleboards[possibleboards.index(board)]
+        self.search_depth = self.search_depth - 2
+            
             
         
-    def search(self, board: chess.Board, ponder: bool, *args: Any) -> PlayResult:
-        a = "Searching"
-        self.tfq.put(a)
-        return PlayResult(random.choice(list(board.legal_moves)), None)
-    def search2(self, board: chess.Board, ponder: bool, *args: Any) -> PlayResult:
-        
-        
-        # print the estimated evaluation of the current board
-        # print(self.model.predict(self.convert_fen_to_bitboard(board.fen()).values[None]))
-        
-        
-        # for now, return a random move
-        maxagent = board.turn
-        if maxagent:
-            topeval = -1000
-        else:
-            topeval = 1000
+        # if ponder is disabled, disable searching right before returning the move to play
+        # if not ponder:
+        #     self.searching = False
             
-        for move in board.legal_moves:
-            boardcopy = board.copy()
-            boardcopy.push(move)
-            
-            #print(boardcopy)
-            ev = self.model.predict(tf.convert_to_tensor(convert_fen_to_bitboard(boardcopy)[None]))[0][0]
-            print(ev)
-            if maxagent:
-                if ev > topeval:
-                    topmove = move
-                    topeval = ev
-            else:
-                if ev < topeval:
-                    topmove = move
-                    topeval = ev
-            
-        return PlayResult(topmove, None)
-    
-    def get_eval(self, board):
-        try:
-            return self.eval_map[board.fen()]
-        except KeyError:
-            eval_estimate = self.model.predict(tf.convert_to_tensor(convert_fen_to_bitboard(board)[None]))[0][0]
-            self.eval_map[board.fen()] = eval_estimate
-            return eval_estimate
+        return PlayResult(self.root.name[1], None)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import chess
+import chess, time
 
 def convert_fen_to_bitboard(board: chess.Board, cols=None) -> list:
     
@@ -44,3 +44,22 @@ def convert_fen_to_bitboard(board: chess.Board, cols=None) -> list:
     outlist.append(board.has_queenside_castling_rights(chess.BLACK))
 
     return outlist
+
+def testfunc(func, *args):
+    start = time.time()
+    func(*args)
+    end = time.time()
+    print(end - start)
+    
+def get_checking_moves(board):
+    return [move for move in board.legal_moves if board.gives_check(move)]
+
+def get_legal_moves(board):
+    return [move for move in board.legal_moves]
+
+def get_captures(board):
+    return [move for move in board.legal_moves if board.is_capture(move) and not board.gives_check(move)]
+
+def get_legal_moves_nonchecking_noncaptures(board):
+    return [move for move in board.legal_moves if not board.gives_check(move) and not board.is_capture(move)]
+
