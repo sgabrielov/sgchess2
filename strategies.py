@@ -159,7 +159,7 @@ class TFEngine(ExampleEngine):
             n = n + 1
             time.sleep(1)
             
-    def populate_search_tree(self, initboard, q):
+    def populate_search_tree(self, q):
         boards_to_eval = [self.root.name[0].fen()]
         nodes_to_update = [self.root]
         
