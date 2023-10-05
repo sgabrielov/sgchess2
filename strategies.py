@@ -249,7 +249,7 @@ class TFEngine(ExampleEngine):
             # 
             for child in self.root.children:
                 if child.value == self.root.value:
-                    self.root.name[1] = child.name[1]
+                    self.root.name = (self.root.name[0], child.name[1])
                        
         
     def search(self, board: chess.Board, time_limit: chess.engine.Limit, ponder: bool, *args: Any) -> PlayResult:
