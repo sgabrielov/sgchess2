@@ -127,7 +127,7 @@ class MinimaxNode:
                 child.get_nodes_at_depth(depth - 1, outlist)
     
     def __eq__(self,o):
-        return self.children == o
+        return self.value == o
 
 def testfunc(func, *args):
     start = time.time()

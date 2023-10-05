@@ -19,4 +19,9 @@ def get_batched_eval(input_data: list, model, batch_size = 64):
     # result is a BATCH_SIZE length numpy array containing predictions
     
     # return model.predict(tf.convert_to_tensor(list(map(convert_fen_to_bitboard, boards))))
+    assert isinstance(input_data, list)
+    assert not isinstance(input_data[0], list)
+    if len(input_data) != batch_size:
+        raise TypeError(f'Unable to send data to tensor flow due to incorrect input data format. Expected len={batch_size}, received len={len(input_data)}')
+
     return model.predict(tf.convert_to_tensor(input_data))

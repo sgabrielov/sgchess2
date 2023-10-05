@@ -40,7 +40,7 @@ class MinimaxNode:
         
         if maxagent:
             value = float('-inf')
-            for child in self.getchildren():
+            for child in self.children:
                 value = max(value, child.traversealphabeta(depth-1, a, b, not maxagent))
                 if value > b or child.hidden:
                     #print(f'pruned {value}')
@@ -51,7 +51,7 @@ class MinimaxNode:
                 
         else:
             value = float('inf')
-            for child in self.getchildren():
+            for child in self.children:
                 value = min(value, child.traversealphabeta(depth-1, a, b, not maxagent))
                 if value < a or child.hidden:
                     #print(f'pruned {value}')
