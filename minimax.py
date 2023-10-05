@@ -29,6 +29,9 @@ class MinimaxNode:
             else:
                 self.value = self.getminvaluechild()
         # print("update call finished")
+        
+    def isleaf(self):
+        return len(self.children) == 0
     
     # recursive minimax with a/b pruning
     def traversealphabeta(self, depth, a, b, maxagent):
