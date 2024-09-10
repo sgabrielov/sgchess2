@@ -1,0 +1,356 @@
+2023-10-05 12:52:02,122 __main__ (lichess-bot.py:998) INFO 
+    .   _/|
+    .  // o\
+    .  || ._)  lichess-bot 2023.9.26.3
+    .  //__\
+    .  )___(   Play on Lichess with a bot
+    
+2023-10-05 12:52:02,136 config (config.py:260) DEBUG Config:
+token: logger
+url: https://lichess.org/
+engine:
+  dir: ./engines/
+  name: TFEngine
+  working_dir: ''
+  protocol: homemade
+  ponder: true
+  polyglot:
+    enabled: true
+    book:
+      standard:
+      - engines/Perfect2023.bin
+    min_weight: 1
+    selection: weighted_random
+    max_depth: 20
+  draw_or_resign:
+    resign_enabled: false
+    resign_score: -1000
+    resign_for_egtb_minus_two: true
+    resign_moves: 3
+    offer_draw_enabled: true
+    offer_draw_score: 0
+    offer_draw_for_egtb_zero: true
+    offer_draw_moves: 10
+    offer_draw_pieces: 10
+  online_moves:
+    max_out_of_book_moves: 10
+    max_retries: 2
+    chessdb_book:
+      enabled: false
+      min_time: 20
+      move_quality: good
+      min_depth: 20
+    lichess_cloud_analysis:
+      enabled: false
+      min_time: 20
+      move_quality: best
+      max_score_difference: 50
+      min_depth: 20
+      min_knodes: 0
+    lichess_opening_explorer:
+      enabled: false
+      min_time: 20
+      source: masters
+      player_name: ''
+      sort: winrate
+      min_games: 10
+    online_egtb:
+      enabled: false
+      min_time: 20
+      max_pieces: 7
+      source: lichess
+      move_quality: best
+  lichess_bot_tbs:
+    syzygy:
+      enabled: false
+      paths:
+      - engines/syzygy
+      max_pieces: 7
+      move_quality: best
+    gaviota:
+      enabled: false
+      paths:
+      - engines/gaviota
+      max_pieces: 5
+      min_dtm_to_consider_as_wdl_1: 120
+      move_quality: best
+  homemade_options: null
+  uci_options:
+    Move Overhead: 100
+    Threads: 4
+    Hash: 512
+    SyzygyPath: ./syzygy/
+    UCI_ShowWDL: true
+  silence_stderr: false
+abort_time: 30
+fake_think_time: false
+rate_limiting_delay: 0
+move_overhead: 2000
+correspondence:
+  move_time: 60
+  checkin_period: 300
+  disconnect_time: 150
+  ponder: false
+challenge:
+  concurrency: 1
+  sort_by: best
+  accept_bot: false
+  only_bot: false
+  max_increment: 20
+  min_increment: 0
+  max_base: 1800
+  min_base: 0
+  max_days: 14
+  min_days: 1
+  variants:
+  - standard
+  time_controls:
+  - bullet
+  - blitz
+  - rapid
+  - classical
+  modes:
+  - casual
+  - rated
+  bullet_requires_increment: false
+greeting:
+  hello: Hi! I'm {me}. Good luck! Type !help for a list of commands I can respond
+    to.
+  goodbye: Good game!
+  hello_spectators: Hi! I'm {me}. Type !help for a list of commands I can respond
+    to.
+  goodbye_spectators: Thanks for watching!
+matchmaking:
+  allow_matchmaking: false
+  challenge_variant: random
+  challenge_timeout: 30
+  challenge_initial_time:
+  - 60
+  - 180
+  challenge_increment:
+  - 1
+  - 2
+  opponent_rating_difference: 300
+  opponent_allow_tos_violation: false
+  challenge_mode: random
+  challenge_filter: none
+
+2023-10-05 12:52:02,136 config (config.py:261) DEBUG ====================
+2023-10-05 12:52:02,140 config (config.py:260) DEBUG Config:
+token: logger
+url: https://lichess.org/
+engine:
+  dir: ./engines/
+  name: TFEngine
+  working_dir: /home/ml/sgchess2
+  protocol: homemade
+  ponder: true
+  polyglot:
+    enabled: true
+    book:
+      standard:
+      - engines/Perfect2023.bin
+    min_weight: 1
+    selection: weighted_random
+    max_depth: 20
+  draw_or_resign:
+    resign_enabled: false
+    resign_score: -1000
+    resign_for_egtb_minus_two: true
+    resign_moves: 3
+    offer_draw_enabled: true
+    offer_draw_score: 0
+    offer_draw_for_egtb_zero: true
+    offer_draw_moves: 10
+    offer_draw_pieces: 10
+  online_moves:
+    max_out_of_book_moves: 10
+    max_retries: 2
+    chessdb_book:
+      enabled: false
+      min_time: 20
+      move_quality: good
+      min_depth: 20
+    lichess_cloud_analysis:
+      enabled: false
+      min_time: 20
+      move_quality: best
+      max_score_difference: 50
+      min_depth: 20
+      min_knodes: 0
+    lichess_opening_explorer:
+      enabled: false
+      min_time: 20
+      source: masters
+      player_name: ''
+      sort: winrate
+      min_games: 10
+    online_egtb:
+      enabled: false
+      min_time: 20
+      max_pieces: 7
+      source: lichess
+      move_quality: best
+    max_depth: .inf
+  lichess_bot_tbs:
+    syzygy:
+      enabled: false
+      paths:
+      - engines/syzygy
+      max_pieces: 7
+      move_quality: best
+    gaviota:
+      enabled: false
+      paths:
+      - engines/gaviota
+      max_pieces: 5
+      min_dtm_to_consider_as_wdl_1: 120
+      move_quality: best
+  homemade_options: null
+  uci_options:
+    Move Overhead: 100
+    Threads: 4
+    Hash: 512
+    SyzygyPath: ./syzygy/
+    UCI_ShowWDL: true
+  silence_stderr: false
+  uci_ponder: false
+abort_time: 30
+fake_think_time: false
+rate_limiting_delay: 0
+move_overhead: 2000
+correspondence:
+  move_time: 60
+  checkin_period: 300
+  disconnect_time: 150
+  ponder: false
+  uci_ponder: false
+challenge:
+  concurrency: 1
+  sort_by: best
+  accept_bot: false
+  only_bot: false
+  max_increment: 20
+  min_increment: 0
+  max_base: 1800
+  min_base: 0
+  max_days: 14
+  min_days: 1
+  variants:
+  - standard
+  time_controls:
+  - bullet
+  - blitz
+  - rapid
+  - classical
+  modes:
+  - casual
+  - rated
+  bullet_requires_increment: false
+  block_list: []
+  allow_list: []
+greeting:
+  hello: Hi! I'm {me}. Good luck! Type !help for a list of commands I can respond
+    to.
+  goodbye: Good game!
+  hello_spectators: Hi! I'm {me}. Type !help for a list of commands I can respond
+    to.
+  goodbye_spectators: Thanks for watching!
+matchmaking:
+  allow_matchmaking: false
+  challenge_variant: random
+  challenge_timeout: 30
+  challenge_initial_time:
+  - 60
+  - 180
+  challenge_increment:
+  - 1
+  - 2
+  opponent_rating_difference: 300
+  opponent_allow_tos_violation: false
+  challenge_mode: random
+  challenge_filter: none
+  block_list: []
+  challenge_days:
+  - null
+  opponent_min_rating: 600
+  opponent_max_rating: 4000
+  overrides: {}
+pgn_file_grouping: game
+
+2023-10-05 12:52:02,140 config (config.py:261) DEBUG ====================
+2023-10-05 12:52:02,140 __main__ (lichess-bot.py:1001) INFO Checking engine configuration ...
+2023-10-05 12:52:02,860 tensorflow (tpu_cluster_resolver.py:32) DEBUG Falling back to TensorFlow client; we recommended you install the Cloud TPU client directly with pip install cloud-tpu-client.
+2023-10-05 12:52:02,946 h5py._conv (__init__.py:47) DEBUG Creating converter from 7 to 5
+2023-10-05 12:52:02,947 h5py._conv (__init__.py:47) DEBUG Creating converter from 5 to 7
+2023-10-05 12:52:02,947 h5py._conv (__init__.py:47) DEBUG Creating converter from 7 to 5
+2023-10-05 12:52:02,947 h5py._conv (__init__.py:47) DEBUG Creating converter from 5 to 7
+2023-10-05 12:52:03,355 numexpr.utils (utils.py:160) INFO NumExpr defaulting to 8 threads.
+2023-10-05 12:52:03,561 engine_wrapper (engine_wrapper.py:67) DEBUG Starting engine: ['/home/ml/sgchess2/engines/TFEngine']
+2023-10-05 12:52:04,175 __main__ (lichess-bot.py:1004) INFO Engine configuration OK
+2023-10-05 12:52:04,178 urllib3.connectionpool (connectionpool.py:1014) DEBUG Starting new HTTPS connection (1): lichess.org:443
+2023-10-05 12:52:04,526 urllib3.connectionpool (connectionpool.py:473) DEBUG https://lichess.org:443 "POST /api/token/test HTTP/1.1" 200 None
+2023-10-05 12:52:04,640 urllib3.connectionpool (connectionpool.py:473) DEBUG https://lichess.org:443 "GET /api/account HTTP/1.1" 200 None
+2023-10-05 12:52:04,641 __main__ (lichess-bot.py:1013) INFO Welcome sgAI!
+2023-10-05 12:52:04,643 __main__ (lichess-bot.py:219) INFO You're now connected to https://lichess.org/ and awaiting challenges.
+2023-10-05 12:52:04,978 urllib3.connectionpool (connectionpool.py:473) DEBUG https://lichess.org:443 "GET /api/account/playing HTTP/1.1" 200 17
+2023-10-05 12:52:11,710 __main__ (lichess-bot.py:385) DEBUG Event: {'type': 'challenge', 'challenge': {'id': 'rXRGjLNF', 'url': 'https://lichess.org/rXRGjLNF', 'status': 'created', 'challenger': {'id': 'osiris8919', 'name': 'osiris8919', 'title': None, 'rating': 1500, 'provisional': True, 'online': True, 'lag': 4}, 'destUser': {'id': 'sgai', 'name': 'sgAI', 'title': 'BOT', 'rating': 2000, 'provisional': True, 'online': True}, 'variant': {'key': 'standard', 'name': 'Standard', 'short': 'Std'}, 'rated': False, 'speed': 'blitz', 'timeControl': {'type': 'clock', 'limit': 300, 'increment': 3, 'show': '5+3'}, 'color': 'random', 'finalColor': 'black', 'perf': {'icon': '\ue01d', 'name': 'Blitz'}}, 'compat': {'bot': True, 'board': True}}
+2023-10-05 12:52:11,713 __main__ (lichess-bot.py:436) INFO Accept Blitz casual challenge from osiris8919 (1500?) (rXRGjLNF)
+2023-10-05 12:52:11,843 urllib3.connectionpool (connectionpool.py:473) DEBUG https://lichess.org:443 "POST /api/challenge/rXRGjLNF/accept HTTP/1.1" 200 11
+2023-10-05 12:52:11,845 __main__ (lichess-bot.py:267) INFO --- Process Queued. Count: 1. IDs: {'rXRGjLNF'}
+2023-10-05 12:52:11,845 __main__ (lichess-bot.py:385) DEBUG Event: {'type': 'gameStart', 'game': {'fullId': 'rXRGjLNFXm6P', 'gameId': 'rXRGjLNF', 'fen': 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 'color': 'white', 'lastMove': '', 'source': 'friend', 'status': {'id': 20, 'name': 'started'}, 'variant': {'key': 'standard', 'name': 'Standard'}, 'speed': 'blitz', 'perf': 'blitz', 'rated': False, 'hasMoved': False, 'opponent': {'id': 'osiris8919', 'username': 'osiris8919', 'rating': 1500}, 'isMyTurn': True, 'secondsLeft': 300, 'compat': {'bot': True, 'board': True}, 'id': 'rXRGjLNF'}}
+2023-10-05 12:52:11,845 __main__ (lichess-bot.py:267) INFO --- Process Used. Count: 1. IDs: {'rXRGjLNF'}
+2023-10-05 12:52:11,852 urllib3.connectionpool (connectionpool.py:1014) DEBUG Starting new HTTPS connection (1): lichess.org:443
+2023-10-05 12:52:12,210 urllib3.connectionpool (connectionpool.py:473) DEBUG https://lichess.org:443 "GET /api/bot/game/stream/rXRGjLNF HTTP/1.1" 200 None
+2023-10-05 12:52:12,212 __mp_main__ (lichess-bot.py:573) DEBUG Initial state: {'id': 'rXRGjLNF', 'variant': {'key': 'standard', 'name': 'Standard', 'short': 'Std'}, 'speed': 'blitz', 'perf': {'name': 'Blitz'}, 'rated': False, 'createdAt': 1696528331768, 'white': {'id': 'sgai', 'name': 'sgAI', 'title': 'BOT', 'rating': 2000, 'provisional': True}, 'black': {'id': 'osiris8919', 'name': 'osiris8919', 'title': None, 'rating': 1500, 'provisional': True}, 'initialFen': 'startpos', 'clock': {'initial': 300000, 'increment': 3000}, 'type': 'gameFull', 'state': {'type': 'gameState', 'moves': '', 'wtime': 300000, 'btime': 300000, 'winc': 3000, 'binc': 3000, 'status': 'started'}}
+2023-10-05 12:52:13,006 tensorflow (tpu_cluster_resolver.py:32) DEBUG Falling back to TensorFlow client; we recommended you install the Cloud TPU client directly with pip install cloud-tpu-client.
+2023-10-05 12:52:13,094 h5py._conv (__init__.py:47) DEBUG Creating converter from 7 to 5
+2023-10-05 12:52:13,095 h5py._conv (__init__.py:47) DEBUG Creating converter from 5 to 7
+2023-10-05 12:52:13,095 h5py._conv (__init__.py:47) DEBUG Creating converter from 7 to 5
+2023-10-05 12:52:13,095 h5py._conv (__init__.py:47) DEBUG Creating converter from 5 to 7
+2023-10-05 12:52:13,575 numexpr.utils (utils.py:160) INFO NumExpr defaulting to 8 threads.
+2023-10-05 12:52:13,710 engine_wrapper (engine_wrapper.py:67) DEBUG Starting engine: ['/home/ml/sgchess2/engines/TFEngine']
+2023-10-05 12:52:14,247 __mp_main__ (lichess-bot.py:579) DEBUG The engine for game rXRGjLNF has pid=?
+2023-10-05 12:52:14,247 __mp_main__ (lichess-bot.py:582) INFO +++ https://lichess.org/rXRGjLNF/white Blitz vs osiris8919 (1500?) (rXRGjLNF)
+2023-10-05 12:52:14,248 conversation (conversation.py:83) INFO *** https://lichess.org/rXRGjLNF/white [player] sgAI: Hi! I'm sgAI. Good luck! Type !help for a list of commands I can respond to.
+2023-10-05 12:52:14,249 urllib3.connectionpool (connectionpool.py:1014) DEBUG Starting new HTTPS connection (2): lichess.org:443
+2023-10-05 12:52:14,597 urllib3.connectionpool (connectionpool.py:473) DEBUG https://lichess.org:443 "POST /api/bot/game/rXRGjLNF/chat HTTP/1.1" 200 11
+2023-10-05 12:52:14,598 conversation (conversation.py:83) INFO *** https://lichess.org/rXRGjLNF/white [spectator] sgAI: Hi! I'm sgAI. Type !help for a list of commands I can respond to.
+2023-10-05 12:52:14,713 urllib3.connectionpool (connectionpool.py:473) DEBUG https://lichess.org:443 "POST /api/bot/game/rXRGjLNF/chat HTTP/1.1" 200 11
+2023-10-05 12:52:14,714 __mp_main__ (lichess-bot.py:690) INFO 
+2023-10-05 12:52:14,714 __mp_main__ (lichess-bot.py:691) INFO move: 1
+2023-10-05 12:52:14,716 engine_wrapper (engine_wrapper.py:689) INFO Got move e2e4 from book engines/Perfect2023.bin for game rXRGjLNF
+2023-10-05 12:52:14,717 engine_wrapper (engine_wrapper.py:293) INFO Source: Opening Book
+2023-10-05 12:52:14,831 urllib3.connectionpool (connectionpool.py:473) DEBUG https://lichess.org:443 "POST /api/bot/game/rXRGjLNF/move/e2e4?offeringDraw=false HTTP/1.1" 200 11
+2023-10-05 12:52:14,834 __mp_main__ (lichess-bot.py:699) DEBUG Game state: {'type': 'chatLine', 'room': 'player', 'username': 'sgAI', 'text': "Hi! I'm sgAI. Good luck! Type !help for a list of commands I can respond to."}
+2023-10-05 12:52:14,834 conversation (conversation.py:42) INFO *** https://lichess.org/rXRGjLNF/white [player] sgAI: Hi! I'm sgAI. Good luck! Type !help for a list of commands I can respond to.
+2023-10-05 12:52:14,835 __mp_main__ (lichess-bot.py:699) DEBUG Game state: {'type': 'chatLine', 'room': 'spectator', 'username': 'sgAI', 'text': "Hi! I'm sgAI. Type !help for a list of commands I can respond to."}
+2023-10-05 12:52:14,836 conversation (conversation.py:42) INFO *** https://lichess.org/rXRGjLNF/white [spectator] sgAI: Hi! I'm sgAI. Type !help for a list of commands I can respond to.
+2023-10-05 12:52:14,837 __mp_main__ (lichess-bot.py:699) DEBUG Game state: {'type': 'gameState', 'moves': 'e2e4', 'wtime': 300000, 'btime': 300000, 'winc': 3000, 'binc': 3000, 'status': 'started'}
+2023-10-05 12:52:16,240 __mp_main__ (lichess-bot.py:699) DEBUG Game state: {'type': 'gameState', 'moves': 'e2e4 e7e5', 'wtime': 300000, 'btime': 300000, 'winc': 3000, 'binc': 3000, 'status': 'started'}
+2023-10-05 12:52:16,241 __mp_main__ (lichess-bot.py:690) INFO 
+2023-10-05 12:52:16,242 __mp_main__ (lichess-bot.py:691) INFO move: 2
+2023-10-05 12:52:16,243 engine_wrapper (engine_wrapper.py:689) INFO Got move g1f3 from book engines/Perfect2023.bin for game rXRGjLNF
+2023-10-05 12:52:16,244 engine_wrapper (engine_wrapper.py:293) INFO Source: Opening Book
+2023-10-05 12:52:16,371 urllib3.connectionpool (connectionpool.py:473) DEBUG https://lichess.org:443 "POST /api/bot/game/rXRGjLNF/move/g1f3?offeringDraw=false HTTP/1.1" 200 11
+2023-10-05 12:52:16,374 __mp_main__ (lichess-bot.py:699) DEBUG Game state: {'type': 'gameState', 'moves': 'e2e4 e7e5 g1f3', 'wtime': 302870, 'btime': 300000, 'winc': 3000, 'binc': 3000, 'status': 'started'}
+2023-10-05 12:52:17,948 __mp_main__ (lichess-bot.py:699) DEBUG Game state: {'type': 'gameState', 'moves': 'e2e4 e7e5 g1f3 g8f6', 'wtime': 302870, 'btime': 301530, 'winc': 3000, 'binc': 3000, 'status': 'started'}
+2023-10-05 12:52:17,950 __mp_main__ (lichess-bot.py:690) INFO 
+2023-10-05 12:52:17,950 __mp_main__ (lichess-bot.py:691) INFO move: 3
+2023-10-05 12:52:17,952 engine_wrapper (engine_wrapper.py:689) INFO Got move f3e5 from book engines/Perfect2023.bin for game rXRGjLNF
+2023-10-05 12:52:17,952 engine_wrapper (engine_wrapper.py:293) INFO Source: Opening Book
+2023-10-05 12:52:18,067 urllib3.connectionpool (connectionpool.py:473) DEBUG https://lichess.org:443 "POST /api/bot/game/rXRGjLNF/move/f3e5?offeringDraw=false HTTP/1.1" 200 11
+2023-10-05 12:52:18,069 __mp_main__ (lichess-bot.py:699) DEBUG Game state: {'type': 'gameState', 'moves': 'e2e4 e7e5 g1f3 g8f6 f3e5', 'wtime': 305750, 'btime': 301530, 'winc': 3000, 'binc': 3000, 'status': 'started'}
+2023-10-05 12:52:19,523 __mp_main__ (lichess-bot.py:699) DEBUG Game state: {'type': 'gameState', 'moves': 'e2e4 e7e5 g1f3 g8f6 f3e5 b8c6', 'wtime': 305750, 'btime': 303180, 'winc': 3000, 'binc': 3000, 'status': 'started'}
+2023-10-05 12:52:19,524 __mp_main__ (lichess-bot.py:690) INFO 
+2023-10-05 12:52:19,524 __mp_main__ (lichess-bot.py:691) INFO move: 4
+2023-10-05 12:52:19,526 engine_wrapper (engine_wrapper.py:643) INFO Searching for wtime 303748 btime 303180 for game rXRGjLNF
+2023-10-05 12:52:20,550 engine_wrapper (engine_wrapper.py:293) INFO Source: Engine
+2023-10-05 12:52:20,715 urllib3.connectionpool (connectionpool.py:473) DEBUG https://lichess.org:443 "POST /api/bot/game/rXRGjLNF/move/a2a4?offeringDraw=false HTTP/1.1" 200 11
+2023-10-05 12:52:20,768 __mp_main__ (lichess-bot.py:699) DEBUG Game state: {'type': 'gameState', 'moves': 'e2e4 e7e5 g1f3 g8f6 f3e5 b8c6 a2a4', 'wtime': 307560, 'btime': 303180, 'winc': 3000, 'binc': 3000, 'status': 'started'}
+2023-10-05 12:52:57,331 __mp_main__ (lichess-bot.py:699) DEBUG Game state: {'type': 'gameState', 'moves': 'e2e4 e7e5 g1f3 g8f6 f3e5 b8c6 a2a4 c6e5', 'wtime': 307560, 'btime': 269680, 'winc': 3000, 'binc': 3000, 'status': 'started'}
+2023-10-05 12:52:57,337 __mp_main__ (lichess-bot.py:690) INFO 
+2023-10-05 12:52:57,347 __mp_main__ (lichess-bot.py:691) INFO move: 5
+2023-10-05 12:52:57,368 engine_wrapper (engine_wrapper.py:643) INFO Searching for wtime 305529 btime 269680 for game rXRGjLNF
+2023-10-05 12:53:56,966 __mp_main__ (lichess-bot.py:68) DEBUG Received SIGINT. Terminating client.
+2023-10-05 12:53:56,971 __mp_main__ (lichess-bot.py:68) DEBUG Received SIGINT. Terminating client.
